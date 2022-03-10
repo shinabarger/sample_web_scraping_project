@@ -14,8 +14,7 @@ from bs4 import BeautifulSoup
 s = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=s)
 
-
-#def launchBrowser():
+# def launchBrowser():
 #    driver.get('https://eprel.ec.europa.eu/screen/product/tyres/657426')
 #    return driver
 
@@ -26,9 +25,9 @@ while i <= 657426:
     driver.get(request_string)
     page = requests.get(request_string)
     html_source = driver.page_source
-#    driver = launchBrowser()
+    #    driver = launchBrowser()
     print(request_string + " status is " + str(page.status_code))
-#    print(driver.page_source)
+    #    print(driver.page_source)
 
     commercial_name = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app"
                                                      "-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
@@ -83,21 +82,56 @@ while i <= 657426:
     external_rolling_noise_classes = [x.text for x in external_rolling_noise_class]
     print("8. Rolling Noise Class: " + str(external_rolling_noise_classes))
 
-    external_rolling_noise_level = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[4]/div/div[2]/app-parameters-combine-item/app-parameter-item-template/div/div[2]/div/span[4]")
+    external_rolling_noise_level = driver.find_elements(By.XPATH,
+                                                        "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
+                                                        "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[4]/div/div["
+                                                        "2]/app-parameters-combine-item/app-parameter-item-template/div/div[2]/div/span[4]")
     external_rolling_noise_levels = [x.text for x in external_rolling_noise_level]
     print("9. Rolling Noise Level: " + str(external_rolling_noise_levels))
 
-    tyre_snow_condition = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[5]/div/div[2]/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
+    tyre_snow_condition = driver.find_elements(By.XPATH,
+                                               "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
+                                               "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[5]/div/div["
+                                               "2]/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
     tyre_snow_conditions = [x.text for x in tyre_snow_condition]
     print("10. Tyre for use in severe snow conditions: ", str(tyre_snow_conditions))
 
     tyre_ice_condition = driver.find_elements(By.XPATH,
-                                               "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[6]/div/div[2]/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
+                                              "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
+                                              "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[6]/div/div["
+                                              "2]/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
     tyre_ice_conditions = [x.text for x in tyre_ice_condition]
     print("11. Tyre for use in severe ice conditions: ", str(tyre_ice_conditions))
 
+    load_version = driver.find_elements(By.XPATH,
+                                        "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
+                                        "1]/div/div/app-tyre-parameters/app-detail-parameter-template[7]/div/div[2]/app-tyre-load-version-parameter-item/div/div["
+                                        "2]/div/span[1]")
+    load_versions = [x.text for x in load_version]
+    print("12. Load version: " + str(load_versions))
 
+    additional_information = driver.find_elements(By.XPATH,
+                                                  "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
+                                                  "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[7]/div/div["
+                                                  "2]/app-multi-language-field/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
+    additional_informations = [x.text for x in additional_information]
+    print("13. Additional information: " + str(additional_informations))
 
+    expand_element = driver.find_element(By.XPATH,
+                                         "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
+                                         "3]/h3/button/span/span")
+    expand_element.click()
+
+    supplier_name = driver.find_elements(By.XPATH,
+                                         "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
+                                         "3]/div/div/app-supplier-contact/div[1]/div[2]/span")
+    supplier_names = [x.text for x in supplier_name]
+    print("14. Supplier Name: " + str(supplier_names))
+
+    service_name = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
+                                                  "1]/ecl-accordion/ecl-accordion-item[3]/div/div/app-supplier-contact/div[2]/div[2]/span")
+    service_names = [x.text for x in service_name]
+    print("15: Service name: " + str(service_names))
 
     driver.close()
 
