@@ -23,7 +23,8 @@ import openpyxl
 #    driver.get('https://eprel.ec.europa.eu/screen/product/tyres/657426')
 #    return driver
 
-
+brand_names_list = []
+model_number_list = []
 commercial_names_list = []
 tyre_size_designation_list = []
 tyre_class_list = []
@@ -47,16 +48,17 @@ url_list = []
 
 # create dataframe
 df = pd.DataFrame(
-    columns=['Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol', 'Fuel Efficiency Class', 'Wet Grip Class', 'Rolling Noise Class',
+    columns=['Brand Name', 'Model Number', 'Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol', 'Fuel Efficiency Class',
+             'Wet Grip Class', 'Rolling Noise Class',
              'Rolling Noise Level',
              'Tyre for Use in Severe Snow Conditions', 'Tyre for Use in Severe Ice Conditions', 'Load Version', 'Additional Information', 'Supplier Name', 'Service Name',
              'Phone', 'Email',
              'Website', 'Address', 'URL'])
 
 # scrape site
-i = 657420
+i = 657405
 
-while i <= 657426:
+while i <= 657406:
     s = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=s)
     request_string = ("https://eprel.ec.europa.eu/screen/product/tyres/" + str(i))
@@ -67,11 +69,29 @@ while i <= 657426:
     #    print(request_string + " status is " + str(page.status_code))
     #    print(driver.page_source)
 
+    brand_name = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/app-product-banner/ecl-sticky-container"
+                                                "/div/div[2]/div/div[1]/span")
+    brand_names = [x.text for x in brand_name]
+    for y in range(len(brand_names)):
+        brand_names_list.append(brand_name[y].text)
+    print("Brand Name: " + str(brand_names_list))
+
+    model_number = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/app-product-banner/ecl-sticky"
+                                                  "-container/div/div[2]/div/div[2]/span")
+    model_numbers = [x.text for x in model_number]
+    for y in range(len(model_numbers)):
+        model_number_list.append(model_number[y].text)
+    print("Model Number: " + str(model_number_list))
+
     commercial_name = driver.find_elements(By.XPATH,
-                                           "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div[2]/app-parameter-item[1]/app-parameter-item-template/div/div[2]/div/span")
+                                           "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
+                                           "1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div[2]/app-parameter-item["
+                                           "1]/app-parameter-item-template/div/div[2]/div/span")
+
     commercial_names = [x.text for x in commercial_name]
     for y in range(len(commercial_names)):
         commercial_names_list.append(commercial_name[y].text)
+
     print("1. Commercial name:" + str(commercial_names_list))
 
     tyre_size_designation = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
@@ -157,8 +177,15 @@ while i <= 657426:
                                               "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[6]/div/div["
                                               "2]/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
     tyre_ice_conditions = [x.text for x in tyre_ice_condition]
-    for y in range(len(tyre_ice_conditions)):
-        tyre_in_ice_list.append(tyre_ice_condition[y].text)
+
+    # if the list is not empty, then iterate over it and add the found element to the list
+    # else if it is empty, add a blank value string to the list
+    if commercial_name:
+        for y in range(len(tyre_ice_conditions)):
+            tyre_in_ice_list.append(tyre_ice_condition[y].text)
+    else:
+        tyre_in_ice_list.append('-')
+
     print("11. Tyre for use in severe ice conditions: ", str(tyre_in_ice_list))
 
     load_version = driver.find_elements(By.XPATH,
@@ -166,13 +193,17 @@ while i <= 657426:
                                         "1]/div/div/app-tyre-parameters/app-detail-parameter-template[7]/div/div[2]/app-tyre-load-version-parameter-item/div/div["
                                         "2]/div/span[1]")
     load_versions = [x.text for x in load_version]
-    for y in range(len(load_versions)):
-        load_version_list.append(load_version[y].text)
+
+    if commercial_name:
+        for y in range(len(load_versions)):
+            load_version_list.append(load_version[y].text)
+    else:
+        load_version_list.append('-')
     print("12. Load version: " + str(load_version_list))
 
     additional_information = driver.find_elements(By.XPATH,
                                                   "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
-                                                  "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[7]/div/div["
+                                                  "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[6]/div/div["
                                                   "2]/app-multi-language-field/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
     additional_informations = [x.text for x in additional_information]
     for y in range(len(additional_informations)):
@@ -256,48 +287,26 @@ while i <= 657426:
 else:
     print("")
 
-
 #    print("Ending number is " + str(i))
 
-def save_titles_to_excel():
-    wb = Workbook()
-    bold = xlwt.easyxf('font: bold 1')
-    sheet1 = wb.add_sheet('Tyre Information')
-    sheet1.write(0, 0, 'Commercial Name', bold)
-    sheet1.write(0, 1, 'Tyre Size', bold)
-    sheet1.write(0, 2, 'Tyre Class', bold)
-    sheet1.write(0, 3, 'Load-Capacity Index', bold)
-    sheet1.write(0, 4, 'Speed Category Symbol', bold)
-    sheet1.write(0, 5, 'Fuel Efficiency Class', bold)
-    sheet1.write(0, 6, 'Wet Grip Class', bold)
-    sheet1.write(0, 7, 'Rolling Noise Class', bold)
-    sheet1.write(0, 8, 'Rolling Noise Level', bold)
-    sheet1.write(0, 9, 'Tyre for use in severe snow conditions', bold)
-    sheet1.write(0, 10, 'Tyre for use in severe ice conditions', bold)
-    sheet1.write(0, 11, 'Load Version', bold)
-    sheet1.write(0, 12, 'Additional Information', bold)
-    sheet1.write(0, 13, 'Supplier Name', bold)
-    sheet1.write(0, 14, 'Service Name', bold)
-    sheet1.write(0, 15, 'Phone', bold)
-    sheet1.write(0, 16, 'Email', bold)
-    sheet1.write(0, 17, 'Website', bold)
-    sheet1.write(0, 18, 'Address', bold)
-    sheet1.write(0, 19, 'URL', bold)
-    wb.save('xlwt example.xls')
-
-save_titles_to_excel()
-
-data_tuples = list(zip(commercial_names_list[0:], tyre_size_designation_list[0:], tyre_class_list[0:], load_capacity_index_list[0:], speed_category_symbol_list[0:],
-                       fuel_efficiency_class_list[0:], wet_grip_class_list[0:], rolling_noise_class_list[0:], rolling_noise_level_list[0:], tyre_in_snow_list[0:],
-                       tyre_in_ice_list[0:], load_version_list[0:], additional_info_list[0:], supplier_name_list[0:], service_name_list[0:], phone_number_list[0:],
-                       email_list[0:], website_list[0:], address_list[0:], url_list[0:]))
+# save to tuple and dataframe
+data_tuples = list(
+    zip(brand_names_list[0:], model_number_list[0:], commercial_names_list[0:], tyre_size_designation_list[0:], tyre_class_list[0:], load_capacity_index_list[0:],
+        speed_category_symbol_list[0:],
+        fuel_efficiency_class_list[0:], wet_grip_class_list[0:], rolling_noise_class_list[0:], rolling_noise_level_list[0:], tyre_in_snow_list[0:],
+        tyre_in_ice_list[0:], load_version_list[0:], additional_info_list[0:], supplier_name_list[0:], service_name_list[0:], phone_number_list[0:],
+        email_list[0:], website_list[0:], address_list[0:], url_list[0:]))
 temp_df = pd.DataFrame(data_tuples,
-                       columns=['Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol', 'Fuel Efficiency Class', 'Wet Grip Class',
+                       columns=['Brand Name', 'Model Number', 'Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol',
+                                'Fuel Efficiency Class', 'Wet Grip Class',
                                 'Rolling Noise Class', 'Rolling Noise Level', 'Tyre for Use in Severe Snow Conditions', 'Tyre for Use in Severe Ice Conditions',
-                                'Load Version', 'Additional Information', 'Supplier Name','Service Name', 'Phone', 'Email', 'Website', 'Address', 'URL'])
+                                'Load Version', 'Additional Information', 'Supplier Name', 'Service Name', 'Phone', 'Email', 'Website', 'Address', 'URL'])
 df = df.append(temp_df)
+
+# print entire dataframe
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 print(df)
+
 
 def save_dataframe_to_excel():
     # create excel writer object
@@ -307,5 +316,5 @@ def save_dataframe_to_excel():
     writer.save()
     print('DataFrame is written successfully to Excel File.')
 
-save_dataframe_to_excel()
 
+save_dataframe_to_excel()
