@@ -2,7 +2,7 @@
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
+import pandas as pd
 import requests
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -13,14 +13,17 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import xlwt
 from xlwt import Workbook
-
-
+import numpy as np
+from sklearn.datasets import load_iris
+import pandas as pd
+from IPython.display import display
+import openpyxl
 
 # def launchBrowser():
 #    driver.get('https://eprel.ec.europa.eu/screen/product/tyres/657426')
 #    return driver
 
-i = 657424
+
 commercial_names_list = []
 tyre_size_designation_list = []
 tyre_class_list = []
@@ -42,6 +45,17 @@ website_list = []
 address_list = []
 url_list = []
 
+# create dataframe
+df = pd.DataFrame(
+    columns=['Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol', 'Fuel Efficiency Class', 'Wet Grip Class', 'Rolling Noise Class',
+             'Rolling Noise Level',
+             'Tyre for Use in Severe Snow Conditions', 'Tyre for Use in Severe Ice Conditions', 'Load Version', 'Additional Information', 'Supplier Name', 'Service Name',
+             'Phone', 'Email',
+             'Website', 'Address', 'URL'])
+
+# scrape site
+i = 657420
+
 while i <= 657426:
     s = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=s)
@@ -49,11 +63,12 @@ while i <= 657426:
     driver.get(request_string)
     page = requests.get(request_string)
     html_source = driver.page_source
-#    driver = launchBrowser()
-#    print(request_string + " status is " + str(page.status_code))
-#    print(driver.page_source)
+    #    driver = launchBrowser()
+    #    print(request_string + " status is " + str(page.status_code))
+    #    print(driver.page_source)
 
-    commercial_name = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div[2]/app-parameter-item[1]/app-parameter-item-template/div/div[2]/div/span")
+    commercial_name = driver.find_elements(By.XPATH,
+                                           "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div[2]/app-parameter-item[1]/app-parameter-item-template/div/div[2]/div/span")
     commercial_names = [x.text for x in commercial_name]
     for y in range(len(commercial_names)):
         commercial_names_list.append(commercial_name[y].text)
@@ -227,28 +242,70 @@ while i <= 657426:
                                              "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
                                              "3]/h3/button/span/span")
         expand_element.click()
-        url_list.append(driver.current_url)
+        current_url = driver.current_url
+        url_list.append(str(current_url))
         print("20: URL: " + str(url_list))
 
     # NoSuchElementException thrown if not present
     except NoSuchElementException:
         print("Element does not exist")
 
-
     driver.close()
 
     i += 1
 else:
     print("")
+
+
 #    print("Ending number is " + str(i))
 
-
-
-def save_to_excel():
+def save_titles_to_excel():
     wb = Workbook()
+    bold = xlwt.easyxf('font: bold 1')
     sheet1 = wb.add_sheet('Tyre Information')
-    sheet1.write(0,0, 'Commercial Name')
-    sheet1.write(0,1, 'Tyre Size')
+    sheet1.write(0, 0, 'Commercial Name', bold)
+    sheet1.write(0, 1, 'Tyre Size', bold)
+    sheet1.write(0, 2, 'Tyre Class', bold)
+    sheet1.write(0, 3, 'Load-Capacity Index', bold)
+    sheet1.write(0, 4, 'Speed Category Symbol', bold)
+    sheet1.write(0, 5, 'Fuel Efficiency Class', bold)
+    sheet1.write(0, 6, 'Wet Grip Class', bold)
+    sheet1.write(0, 7, 'Rolling Noise Class', bold)
+    sheet1.write(0, 8, 'Rolling Noise Level', bold)
+    sheet1.write(0, 9, 'Tyre for use in severe snow conditions', bold)
+    sheet1.write(0, 10, 'Tyre for use in severe ice conditions', bold)
+    sheet1.write(0, 11, 'Load Version', bold)
+    sheet1.write(0, 12, 'Additional Information', bold)
+    sheet1.write(0, 13, 'Supplier Name', bold)
+    sheet1.write(0, 14, 'Service Name', bold)
+    sheet1.write(0, 15, 'Phone', bold)
+    sheet1.write(0, 16, 'Email', bold)
+    sheet1.write(0, 17, 'Website', bold)
+    sheet1.write(0, 18, 'Address', bold)
+    sheet1.write(0, 19, 'URL', bold)
     wb.save('xlwt example.xls')
 
-save_to_excel()
+save_titles_to_excel()
+
+data_tuples = list(zip(commercial_names_list[0:], tyre_size_designation_list[0:], tyre_class_list[0:], load_capacity_index_list[0:], speed_category_symbol_list[0:],
+                       fuel_efficiency_class_list[0:], wet_grip_class_list[0:], rolling_noise_class_list[0:], rolling_noise_level_list[0:], tyre_in_snow_list[0:],
+                       tyre_in_ice_list[0:], load_version_list[0:], additional_info_list[0:], supplier_name_list[0:], service_name_list[0:], phone_number_list[0:],
+                       email_list[0:], website_list[0:], address_list[0:], url_list[0:]))
+temp_df = pd.DataFrame(data_tuples,
+                       columns=['Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol', 'Fuel Efficiency Class', 'Wet Grip Class',
+                                'Rolling Noise Class', 'Rolling Noise Level', 'Tyre for Use in Severe Snow Conditions', 'Tyre for Use in Severe Ice Conditions',
+                                'Load Version', 'Additional Information', 'Supplier Name','Service Name', 'Phone', 'Email', 'Website', 'Address', 'URL'])
+df = df.append(temp_df)
+pd.set_option("display.max_rows", None, "display.max_columns", None)
+print(df)
+
+def save_dataframe_to_excel():
+    # create excel writer object
+    writer = pd.ExcelWriter('EU Tyre Information.xlsx')
+    df.to_excel(writer)
+    # save the excel
+    writer.save()
+    print('DataFrame is written successfully to Excel File.')
+
+save_dataframe_to_excel()
+
