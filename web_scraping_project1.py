@@ -92,7 +92,7 @@ while i <= 657406:
     for y in range(len(commercial_names)):
         commercial_names_list.append(commercial_name[y].text)
 
-    print("1. Commercial name:" + str(commercial_names_list))
+    print("Commercial name:" + str(commercial_names_list))
 
     tyre_size_designation = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                                            "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div["
@@ -100,7 +100,7 @@ while i <= 657406:
     tyre_size_designations = [x.text for x in tyre_size_designation]
     for y in range(len(tyre_size_designations)):
         tyre_size_designation_list.append(tyre_size_designation[y].text)
-    print("2. Tyre size:" + str(tyre_size_designation_list))
+    print("Tyre size:" + str(tyre_size_designation_list))
 
     tyre_class = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                                 "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div["
@@ -108,7 +108,7 @@ while i <= 657406:
     tyre_classes = [x.text for x in tyre_class]
     for y in range(len(tyre_classes)):
         tyre_class_list.append(tyre_class[y].text)
-    print("3. Tyre class: " + str(tyre_class_list))
+    print("Tyre class: " + str(tyre_class_list))
 
     load_capacity_index = driver.find_elements(By.XPATH,
                                                "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
@@ -117,7 +117,7 @@ while i <= 657406:
     load_capacity_indexes = [x.text for x in load_capacity_index]
     for y in range(len(load_capacity_indexes)):
         load_capacity_index_list.append(load_capacity_index[y].text)
-    print("4. Load-capacity index: " + str(load_capacity_index_list))
+    print("Load-capacity index: " + str(load_capacity_index_list))
 
     speed_category_symbol = driver.find_elements(By.XPATH,
                                                  "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
@@ -126,7 +126,7 @@ while i <= 657406:
     speed_category_symbols = [x.text for x in speed_category_symbol]
     for y in range(len(speed_category_symbols)):
         speed_category_symbol_list.append(speed_category_symbol[y].text)
-    print("5. Speed category symbol: " + str(speed_category_symbol_list))
+    print("Speed category symbol: " + str(speed_category_symbol_list))
 
     fuel_efficiency_class = driver.find_elements(By.XPATH,
                                                  "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
@@ -135,7 +135,7 @@ while i <= 657406:
     fuel_efficiency_classes = [x.text for x in fuel_efficiency_class]
     for y in range(len(fuel_efficiency_classes)):
         fuel_efficiency_class_list.append(fuel_efficiency_class[y].text)
-    print("6. Fuel efficiency class: " + str(fuel_efficiency_class_list))
+    print("Fuel efficiency class: " + str(fuel_efficiency_class_list))
 
     wet_grip_class = driver.find_elements(By.XPATH,
                                           "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
@@ -144,7 +144,7 @@ while i <= 657406:
     wet_grip_classes = [x.text for x in wet_grip_class]
     for y in range(len(wet_grip_classes)):
         wet_grip_class_list.append(wet_grip_class[y].text)
-    print("7. Wet grip class: " + str(wet_grip_class_list))
+    print("Wet grip class: " + str(wet_grip_class_list))
 
     external_rolling_noise_class = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                                                   "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template["
@@ -152,7 +152,7 @@ while i <= 657406:
     external_rolling_noise_classes = [x.text for x in external_rolling_noise_class]
     for y in range(len(external_rolling_noise_classes)):
         rolling_noise_class_list.append(external_rolling_noise_class[y].text)
-    print("8. Rolling Noise Class: " + str(rolling_noise_class_list))
+    print("Rolling Noise Class: " + str(rolling_noise_class_list))
 
     external_rolling_noise_level = driver.find_elements(By.XPATH,
                                                         "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
@@ -210,6 +210,7 @@ while i <= 657406:
         additional_info_list.append(additional_information[y].text)
     print("13. Additional information: " + str(additional_info_list))
 
+    # expand the bottom element
     try:
         expand_element = driver.find_element(By.XPATH,
                                              "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
@@ -218,7 +219,7 @@ while i <= 657406:
 
     # NoSuchElementException thrown if not present
     except NoSuchElementException:
-        print("Element does not exist")
+        print("No Contact Supplier Section on Page")
 
     try:
         supplier_name = driver.find_elements(By.XPATH,
