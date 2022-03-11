@@ -25,9 +25,9 @@ while i <= 657426:
     driver.get(request_string)
     page = requests.get(request_string)
     html_source = driver.page_source
-    #    driver = launchBrowser()
-    print(request_string + " status is " + str(page.status_code))
-    #    print(driver.page_source)
+#    driver = launchBrowser()
+#    print(request_string + " status is " + str(page.status_code))
+#    print(driver.page_source)
 
     commercial_name = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app"
                                                      "-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
@@ -132,6 +132,28 @@ while i <= 657426:
                                                   "1]/ecl-accordion/ecl-accordion-item[3]/div/div/app-supplier-contact/div[2]/div[2]/span")
     service_names = [x.text for x in service_name]
     print("15: Service name: " + str(service_names))
+
+    phone_number = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
+                                                  "1]/ecl-accordion/ecl-accordion-item[3]/div/div/app-supplier-contact/div[3]/div[2]/span")
+    phone_numbers = [x.text for x in phone_number]
+    print("16: Phone: " + str(phone_numbers))
+
+    email = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
+                                           "3]/div/div/app-supplier-contact/div[4]/div[2]/a")
+    emails = [x.text for x in email]
+    print("17: Email: " + str(emails))
+
+    website = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
+                                             "1]/ecl-accordion/ecl-accordion-item[3]/div/div/app-supplier-contact/div[5]/div[2]/a")
+    websites = [x.text for x in website]
+    print("18: Website: " + str(websites))
+
+    address = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
+                                             "1]/ecl-accordion/ecl-accordion-item[3]/div/div/app-supplier-contact/div[6]/div[2]/span")
+    addresses = [x.text for x in address]
+    print("19: Address: " + str(addresses))
+
+    print("20: URL: " + driver.current_url)
 
     driver.close()
 
