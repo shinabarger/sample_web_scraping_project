@@ -5,22 +5,25 @@
 
 import requests
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 
-s = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=s)
+
 
 # def launchBrowser():
 #    driver.get('https://eprel.ec.europa.eu/screen/product/tyres/657426')
 #    return driver
 
-i = 657426
+i = 657420
+commercial_names_list = []
 
 while i <= 657426:
+    s = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=s)
     request_string = ("https://eprel.ec.europa.eu/screen/product/tyres/" + str(i))
     driver.get(request_string)
     page = requests.get(request_string)
@@ -29,12 +32,13 @@ while i <= 657426:
 #    print(request_string + " status is " + str(page.status_code))
 #    print(driver.page_source)
 
-    commercial_name = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app"
-                                                     "-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
-                                                     "1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div["
-                                                     "2]/app-parameter-item[1]/app-parameter-item-template/div/div[2]/div/span")
+    commercial_name = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div[2]/app-parameter-item[1]/app-parameter-item-template/div/div[2]/div/span")
     commercial_names = [x.text for x in commercial_name]
+
+    for y in range(len(commercial_names)):
+        commercial_names_list.append(commercial_name[y].text)
     print("1. Commercial Name: " + str(commercial_names))
+    print("Commercial names part 2 attempt: " + str(commercial_names_list))
 
     tyre_size_designation = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                                            "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div["
@@ -117,16 +121,26 @@ while i <= 657426:
     additional_informations = [x.text for x in additional_information]
     print("13. Additional information: " + str(additional_informations))
 
-    expand_element = driver.find_element(By.XPATH,
-                                         "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
-                                         "3]/h3/button/span/span")
-    expand_element.click()
+    try:
+        expand_element = driver.find_element(By.XPATH,
+                                             "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
+                                             "3]/h3/button/span/span")
+        expand_element.click()
+    # NoSuchElementException thrown if not present
 
-    supplier_name = driver.find_elements(By.XPATH,
-                                         "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
-                                         "3]/div/div/app-supplier-contact/div[1]/div[2]/span")
-    supplier_names = [x.text for x in supplier_name]
-    print("14. Supplier Name: " + str(supplier_names))
+    except NoSuchElementException:
+        print("Element does not exist")
+
+    try:
+        supplier_name = driver.find_elements(By.XPATH,
+                                             "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
+                                             "3]/div/div/app-supplier-contact/div[1]/div[2]/span")
+        supplier_names = [x.text for x in supplier_name]
+        print("14. Supplier Name: " + str(supplier_names))
+
+    except NoSuchElementException:
+        print("Element does not exist")
+        driver.close()
 
     service_name = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                                   "1]/ecl-accordion/ecl-accordion-item[3]/div/div/app-supplier-contact/div[2]/div[2]/span")
