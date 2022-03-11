@@ -153,7 +153,9 @@ while i <= 657426:
     addresses = [x.text for x in address]
     print("19: Address: " + str(addresses))
 
-    print("20: URL: " + driver.current_url)
+    urls = []
+    urls.append(driver.current_url)
+    print("20: URL: " + str(urls))
 
     driver.close()
 
