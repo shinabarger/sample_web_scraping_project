@@ -23,8 +23,8 @@ import openpyxl
 #    driver.get('https://eprel.ec.europa.eu/screen/product/tyres/657426')
 #    return driver
 
+
 brand_names_list = []
-model_number_list = []
 commercial_names_list = []
 tyre_size_designation_list = []
 tyre_class_list = []
@@ -48,17 +48,17 @@ url_list = []
 
 # create dataframe
 df = pd.DataFrame(
-    columns=['Brand Name', 'Model Number', 'Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol', 'Fuel Efficiency Class',
-             'Wet Grip Class', 'Rolling Noise Class',
+    columns=['Brand Name', 'Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol', 'Fuel Efficiency Class', 'Wet Grip Class',
+             'Rolling Noise Class',
              'Rolling Noise Level',
              'Tyre for Use in Severe Snow Conditions', 'Tyre for Use in Severe Ice Conditions', 'Load Version', 'Additional Information', 'Supplier Name', 'Service Name',
              'Phone', 'Email',
              'Website', 'Address', 'URL'])
 
 # scrape site
-i = 657405
+i = 657420
 
-while i <= 657406:
+while i <= 657426:
     s = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=s)
     request_string = ("https://eprel.ec.europa.eu/screen/product/tyres/" + str(i))
@@ -69,30 +69,19 @@ while i <= 657406:
     #    print(request_string + " status is " + str(page.status_code))
     #    print(driver.page_source)
 
-    brand_name = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/app-product-banner/ecl-sticky-container"
-                                                "/div/div[2]/div/div[1]/span")
+    brand_name = driver.find_elements(By.XPATH,
+                                      "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/app-product-banner/ecl-sticky-container/div/div[2]/div/div[1]/span")
     brand_names = [x.text for x in brand_name]
     for y in range(len(brand_names)):
         brand_names_list.append(brand_name[y].text)
     print("Brand Name: " + str(brand_names_list))
 
-    model_number = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/app-product-banner/ecl-sticky"
-                                                  "-container/div/div[2]/div/div[2]/span")
-    model_numbers = [x.text for x in model_number]
-    for y in range(len(model_numbers)):
-        model_number_list.append(model_number[y].text)
-    print("Model Number: " + str(model_number_list))
-
     commercial_name = driver.find_elements(By.XPATH,
-                                           "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
-                                           "1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div[2]/app-parameter-item["
-                                           "1]/app-parameter-item-template/div/div[2]/div/span")
-
+                                           "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div[2]/app-parameter-item[1]/app-parameter-item-template/div/div[2]/div/span")
     commercial_names = [x.text for x in commercial_name]
     for y in range(len(commercial_names)):
         commercial_names_list.append(commercial_name[y].text)
-
-    print("Commercial name:" + str(commercial_names_list))
+    print("1. Commercial name:" + str(commercial_names_list))
 
     tyre_size_designation = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                                            "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div["
@@ -100,7 +89,7 @@ while i <= 657406:
     tyre_size_designations = [x.text for x in tyre_size_designation]
     for y in range(len(tyre_size_designations)):
         tyre_size_designation_list.append(tyre_size_designation[y].text)
-    print("Tyre size:" + str(tyre_size_designation_list))
+    print("2. Tyre size:" + str(tyre_size_designation_list))
 
     tyre_class = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                                 "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[1]/div/div["
@@ -108,7 +97,7 @@ while i <= 657406:
     tyre_classes = [x.text for x in tyre_class]
     for y in range(len(tyre_classes)):
         tyre_class_list.append(tyre_class[y].text)
-    print("Tyre class: " + str(tyre_class_list))
+    print("3. Tyre class: " + str(tyre_class_list))
 
     load_capacity_index = driver.find_elements(By.XPATH,
                                                "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
@@ -117,7 +106,7 @@ while i <= 657406:
     load_capacity_indexes = [x.text for x in load_capacity_index]
     for y in range(len(load_capacity_indexes)):
         load_capacity_index_list.append(load_capacity_index[y].text)
-    print("Load-capacity index: " + str(load_capacity_index_list))
+    print("4. Load-capacity index: " + str(load_capacity_index_list))
 
     speed_category_symbol = driver.find_elements(By.XPATH,
                                                  "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
@@ -126,7 +115,7 @@ while i <= 657406:
     speed_category_symbols = [x.text for x in speed_category_symbol]
     for y in range(len(speed_category_symbols)):
         speed_category_symbol_list.append(speed_category_symbol[y].text)
-    print("Speed category symbol: " + str(speed_category_symbol_list))
+    print("5. Speed category symbol: " + str(speed_category_symbol_list))
 
     fuel_efficiency_class = driver.find_elements(By.XPATH,
                                                  "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
@@ -135,7 +124,7 @@ while i <= 657406:
     fuel_efficiency_classes = [x.text for x in fuel_efficiency_class]
     for y in range(len(fuel_efficiency_classes)):
         fuel_efficiency_class_list.append(fuel_efficiency_class[y].text)
-    print("Fuel efficiency class: " + str(fuel_efficiency_class_list))
+    print("6. Fuel efficiency class: " + str(fuel_efficiency_class_list))
 
     wet_grip_class = driver.find_elements(By.XPATH,
                                           "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
@@ -144,7 +133,7 @@ while i <= 657406:
     wet_grip_classes = [x.text for x in wet_grip_class]
     for y in range(len(wet_grip_classes)):
         wet_grip_class_list.append(wet_grip_class[y].text)
-    print("Wet grip class: " + str(wet_grip_class_list))
+    print("7. Wet grip class: " + str(wet_grip_class_list))
 
     external_rolling_noise_class = driver.find_elements(By.XPATH, "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                                                   "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template["
@@ -152,7 +141,7 @@ while i <= 657406:
     external_rolling_noise_classes = [x.text for x in external_rolling_noise_class]
     for y in range(len(external_rolling_noise_classes)):
         rolling_noise_class_list.append(external_rolling_noise_class[y].text)
-    print("Rolling Noise Class: " + str(rolling_noise_class_list))
+    print("8. Rolling Noise Class: " + str(rolling_noise_class_list))
 
     external_rolling_noise_level = driver.find_elements(By.XPATH,
                                                         "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
@@ -177,15 +166,8 @@ while i <= 657406:
                                               "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[6]/div/div["
                                               "2]/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
     tyre_ice_conditions = [x.text for x in tyre_ice_condition]
-
-    # if the list is not empty, then iterate over it and add the found element to the list
-    # else if it is empty, add a blank value string to the list
-    if commercial_name:
-        for y in range(len(tyre_ice_conditions)):
-            tyre_in_ice_list.append(tyre_ice_condition[y].text)
-    else:
-        tyre_in_ice_list.append('-')
-
+    for y in range(len(tyre_ice_conditions)):
+        tyre_in_ice_list.append(tyre_ice_condition[y].text)
     print("11. Tyre for use in severe ice conditions: ", str(tyre_in_ice_list))
 
     load_version = driver.find_elements(By.XPATH,
@@ -193,24 +175,19 @@ while i <= 657406:
                                         "1]/div/div/app-tyre-parameters/app-detail-parameter-template[7]/div/div[2]/app-tyre-load-version-parameter-item/div/div["
                                         "2]/div/span[1]")
     load_versions = [x.text for x in load_version]
-
-    if commercial_name:
-        for y in range(len(load_versions)):
-            load_version_list.append(load_version[y].text)
-    else:
-        load_version_list.append('-')
+    for y in range(len(load_versions)):
+        load_version_list.append(load_version[y].text)
     print("12. Load version: " + str(load_version_list))
 
     additional_information = driver.find_elements(By.XPATH,
                                                   "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
-                                                  "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[6]/div/div["
+                                                  "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[7]/div/div["
                                                   "2]/app-multi-language-field/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
     additional_informations = [x.text for x in additional_information]
     for y in range(len(additional_informations)):
         additional_info_list.append(additional_information[y].text)
     print("13. Additional information: " + str(additional_info_list))
 
-    # expand the bottom element
     try:
         expand_element = driver.find_element(By.XPATH,
                                              "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
@@ -219,7 +196,7 @@ while i <= 657406:
 
     # NoSuchElementException thrown if not present
     except NoSuchElementException:
-        print("No Contact Supplier Section on Page")
+        print("No supplier info dropdown to select.")
 
     try:
         supplier_name = driver.find_elements(By.XPATH,
@@ -290,21 +267,17 @@ else:
 
 #    print("Ending number is " + str(i))
 
-# save to tuple and dataframe
 data_tuples = list(
-    zip(brand_names_list[0:], model_number_list[0:], commercial_names_list[0:], tyre_size_designation_list[0:], tyre_class_list[0:], load_capacity_index_list[0:],
-        speed_category_symbol_list[0:],
+    zip(brand_names_list[0:], commercial_names_list[0:], tyre_size_designation_list[0:], tyre_class_list[0:], load_capacity_index_list[0:], speed_category_symbol_list[0:],
         fuel_efficiency_class_list[0:], wet_grip_class_list[0:], rolling_noise_class_list[0:], rolling_noise_level_list[0:], tyre_in_snow_list[0:],
         tyre_in_ice_list[0:], load_version_list[0:], additional_info_list[0:], supplier_name_list[0:], service_name_list[0:], phone_number_list[0:],
         email_list[0:], website_list[0:], address_list[0:], url_list[0:]))
 temp_df = pd.DataFrame(data_tuples,
-                       columns=['Brand Name', 'Model Number', 'Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol',
-                                'Fuel Efficiency Class', 'Wet Grip Class',
+                       columns=['Brand Name', 'Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol', 'Fuel Efficiency Class',
+                                'Wet Grip Class',
                                 'Rolling Noise Class', 'Rolling Noise Level', 'Tyre for Use in Severe Snow Conditions', 'Tyre for Use in Severe Ice Conditions',
                                 'Load Version', 'Additional Information', 'Supplier Name', 'Service Name', 'Phone', 'Email', 'Website', 'Address', 'URL'])
 df = df.append(temp_df)
-
-# print entire dataframe
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 print(df)
 
