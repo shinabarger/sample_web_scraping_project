@@ -56,7 +56,7 @@ df = pd.DataFrame(
              'Website', 'Address', 'URL'])
 
 # scrape site
-i = 657420
+i = 657423
 
 while i <= 657426:
     s = Service(ChromeDriverManager().install())
@@ -165,9 +165,11 @@ while i <= 657426:
                                               "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                               "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[6]/div/div["
                                               "2]/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
-    tyre_ice_conditions = [x.text for x in tyre_ice_condition]
-    for y in range(len(tyre_ice_conditions)):
-        tyre_in_ice_list.append(tyre_ice_condition[y].text)
+    if brand_name:
+        # using list comprehension + ternary operator to create a new list based on the tyre_ice_condition list
+        tyre_ice_conditions = [x.text for x in tyre_ice_condition] if len(tyre_ice_condition) > 0 else ["-"]
+        for y in range(len(tyre_ice_conditions)):
+            tyre_in_ice_list.append(tyre_ice_condition[y].text)
     print("11. Tyre for use in severe ice conditions: ", str(tyre_in_ice_list))
 
     load_version = driver.find_elements(By.XPATH,
@@ -272,6 +274,7 @@ data_tuples = list(
         fuel_efficiency_class_list[0:], wet_grip_class_list[0:], rolling_noise_class_list[0:], rolling_noise_level_list[0:], tyre_in_snow_list[0:],
         tyre_in_ice_list[0:], load_version_list[0:], additional_info_list[0:], supplier_name_list[0:], service_name_list[0:], phone_number_list[0:],
         email_list[0:], website_list[0:], address_list[0:], url_list[0:]))
+
 temp_df = pd.DataFrame(data_tuples,
                        columns=['Brand Name', 'Commercial Name', 'Tyre Size', 'Tyre Class', 'Load-Capacity Index', 'Speed Category Symbol', 'Fuel Efficiency Class',
                                 'Wet Grip Class',
