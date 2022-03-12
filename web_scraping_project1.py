@@ -56,9 +56,9 @@ df = pd.DataFrame(
              'Website', 'Address', 'URL'])
 
 # scrape site
-i = 657423
+i = 657405
 
-while i <= 657426:
+while i <= 657406:
     s = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=s)
     request_string = ("https://eprel.ec.europa.eu/screen/product/tyres/" + str(i))
@@ -161,33 +161,38 @@ while i <= 657426:
         tyre_in_snow_list.append(tyre_snow_condition[y].text)
     print("10. Tyre for use in severe snow conditions: ", str(tyre_in_snow_list))
 
+#get severe ice conditions
     tyre_ice_condition = driver.find_elements(By.XPATH,
                                               "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                               "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[6]/div/div["
                                               "2]/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
     if brand_name:
         # using list comprehension + ternary operator to create a new list based on the tyre_ice_condition list
-        tyre_ice_conditions = [x.text for x in tyre_ice_condition] if len(tyre_ice_condition) > 0 else ["-"]
-        for y in range(len(tyre_ice_conditions)):
-            tyre_in_ice_list.append(tyre_ice_condition[y].text)
+        tyre_in_ice_conditions = [x.text for x in tyre_ice_condition] if tyre_ice_condition else ["-"]
+        for y in range(len(tyre_in_ice_conditions)):
+            tyre_in_ice_list.append(tyre_in_ice_conditions[0])
     print("11. Tyre for use in severe ice conditions: ", str(tyre_in_ice_list))
 
+# get load version
     load_version = driver.find_elements(By.XPATH,
                                         "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div[1]/ecl-accordion/ecl-accordion-item["
                                         "1]/div/div/app-tyre-parameters/app-detail-parameter-template[7]/div/div[2]/app-tyre-load-version-parameter-item/div/div["
                                         "2]/div/span[1]")
-    load_versions = [x.text for x in load_version]
-    for y in range(len(load_versions)):
-        load_version_list.append(load_version[y].text)
+    if brand_name:
+        load_versions = [x.text for x in load_version] if load_version else ["-"]
+        for y in range(len(load_versions)):
+            load_version_list.append(load_versions[0])
     print("12. Load version: " + str(load_version_list))
 
+#get additional information 1
     additional_information = driver.find_elements(By.XPATH,
                                                   "//*[@id='ecl-main-content']/div/app-detail-page/ux-block-content/div/app-detail/div/div/div["
                                                   "1]/ecl-accordion/ecl-accordion-item[1]/div/div/app-tyre-parameters/app-detail-parameter-template[7]/div/div["
                                                   "2]/app-multi-language-field/app-parameter-item/app-parameter-item-template/div/div[2]/div/span")
-    additional_informations = [x.text for x in additional_information]
-    for y in range(len(additional_informations)):
-        additional_info_list.append(additional_information[y].text)
+    if brand_name:
+        additional_informations = [x.text for x in additional_information] if additional_information else ["-"]
+        for y in range(len(additional_informations)):
+            additional_info_list.append(additional_informations[0])
     print("13. Additional information: " + str(additional_info_list))
 
     try:
